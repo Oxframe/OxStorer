@@ -1,6 +1,8 @@
 package cn.oxframe.storer.sample;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -9,15 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Map;
 
+import cn.oxframe.storer.OxFiler;
 import cn.oxframe.storer.OxStorer;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = this;
         OxStorer.instance(getApplicationContext(), "aaaa");
         initView();
 
@@ -84,6 +90,18 @@ public class MainActivity extends AppCompatActivity {
                 OxStorer.clear();
             }
         });
+
+        findViewById(R.id.getpath).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("MainActivity", mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath());
+                Log.e("MainActiity", Environment.getExternalStorageDirectory() + "");
+                Log.e("MainActiity", Environment.getDataDirectory() + "");
+                Log.e("MainActivity", "是否有内存卡" + OxFiler.sdCardIsAvailable());
+                Log.e("MainActivity", "根目录" + OxFiler.getRootPath());
+            }
+        });
+
     }
 
 }
