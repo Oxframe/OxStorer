@@ -17,7 +17,6 @@ public class OxStorer {
     /**
      * debug 环境下允许修改 sp文件的路径
      */
-
     public static OxStorer instance(Context context, String fileName) {
         if (null == mStorer) {
             synchronized (OxStorer.class) {

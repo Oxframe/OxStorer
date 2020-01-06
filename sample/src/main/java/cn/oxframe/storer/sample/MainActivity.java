@@ -1,17 +1,19 @@
 package cn.oxframe.storer.sample;
 
+import android.Manifest;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Map;
 
-import cn.oxframe.storer.OxFiler;
+import cn.oxframe.storer.OxDevicer;
 import cn.oxframe.storer.OxStorer;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,9 +26,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mContext = this;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, 100);
+        }
+
         OxStorer.instance(getApplicationContext(), "aaaa");
         initView();
 
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.e("MainActivity", "requestCode" + requestCode);
     }
 
     Button add;
@@ -38,9 +52,12 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OxStorer.put("aaa", "aaaa");
-                OxStorer.put("bbb", "bbbb");
-                OxStorer.put("ccc", "cccc");
+                int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
+                if (i == 1) {
+                    OxStorer.put("aaa", "aaaa");
+                    OxStorer.put("bbb", "bbbb");
+                    OxStorer.put("ccc", "cccc");
+                }
             }
         });
 
@@ -80,25 +97,30 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.remove).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OxStorer.remove("ccc");
+                int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
+                if (i == 1)
+                    OxStorer.remove("ccc");
             }
         });
 
         findViewById(R.id.clear).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OxStorer.clear();
+                int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
+                if (i == 1)
+                    OxStorer.clear();
             }
         });
 
         findViewById(R.id.getpath).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("MainActivity", mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath());
-                Log.e("MainActiity", Environment.getExternalStorageDirectory() + "");
-                Log.e("MainActiity", Environment.getDataDirectory() + "");
-                Log.e("MainActivity", "是否有内存卡" + OxFiler.sdCardIsAvailable());
-                Log.e("MainActivity", "根目录" + OxFiler.getRootPath());
+                int i = checkPermission(Manifest.permission.READ_PHONE_STATE, 1, 2);
+
+//                ffffffff-d701-4739-0000-00006e4d869a
+//                ffffffff-d701-4739-0000-00006e4d869a
+                Log.e("dsdasd1", OxDevicer.UUID());
+                Log.e("dsdasd2", OxDevicer.UUID(mContext, "15021527225"));
             }
         });
 

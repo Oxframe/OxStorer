@@ -1,6 +1,7 @@
 package cn.oxframe.storer;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.Closeable;
 import java.io.File;
@@ -14,27 +15,71 @@ import java.io.IOException;
 public class OxFiler {
 
     /**
-     * 得到SD卡根目录，SD卡不可用则获取内部存储的根目录
+     * SD Card 是否安装 是否可写入数据
      */
-    public static File getRootPath() {
-        File path = null;
-        if (sdCardIsAvailable()) {
-            path = Environment.getExternalStorageDirectory(); //SD卡根目录    /storage/emulated/0
+    private static boolean isSDCardAvailable() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File sd = new File(Environment.getExternalStorageDirectory().getPath());
+            return sd.canWrite();
         } else {
-            path = Environment.getDataDirectory();//内部存储的根目录    /data
+            return false;
         }
-        return path;
     }
 
     /**
-     * SD卡是否可用
+     * 创建一个文件夹
+     */
+    public static String iCreateFolderPath(String folder) {
+        StringBuilder sb = new StringBuilder();
+        if (isSDCardAvailable()) {
+            // path：/storage/emulated/0
+            sb.append(Environment.getExternalStorageDirectory());
+            sb.append(File.separator);
+            sb.append("Sample");
+        } else {
+            // path：/data
+            sb.append(Environment.getDataDirectory());
+        }
+        sb.append(File.separator);
+        sb.append(folder);
+        sb.append(File.separator);
+        File file = new File(sb.toString());
+        if (!file.exists() || !file.isDirectory()) {
+            boolean mkdirs = file.mkdirs();
+            if (mkdirs) {
+                Log.i("OxFiler", "文件夹创建成功：" + sb.toString());
+            } else {
+                Log.i("OxFiler", "文件夹创建失败：" + sb.toString());
+            }
+        } else {
+            Log.i("OxFiler", "文件夹已经存在：" + sb.toString());
+        }
+        return file.getAbsolutePath();
+    }
+
+
+    /**
+     * 得到SD卡根目录，SD卡不可用则获取内部存储的根目录
+     */
+    public static File getRootPath() {
+        if (isSDCardAvailable()) {
+            return Environment.getExternalStorageDirectory(); //SD卡根目录    /storage/emulated/0
+        } else {
+            return Environment.getDataDirectory();//内部存储的根目录    /data
+        }
+    }
+
+    /**
+     * 是否安装了sd 卡
+     * sd卡是否可写入数据
      */
     public static boolean sdCardIsAvailable() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File sd = new File(Environment.getExternalStorageDirectory().getPath());
             return sd.canWrite();
-        } else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -74,7 +119,7 @@ public class OxFiler {
      * @param file 文件
      * @return {@code true}: 存在或创建成功<br>{@code false}: 不存在或创建失败
      */
-    public static boolean createOrExistsFile(File file) {
+    private static boolean createOrExistsFile(File file) {
         if (file == null)
             return false;
         // 如果存在，是文件则返回true，是目录则返回false
@@ -102,9 +147,6 @@ public class OxFiler {
 
     /**
      * 判断字符串是否为 null 或全为空白字符
-     *
-     * @param s
-     * @return
      */
     private static boolean isSpace(final String s) {
         if (s == null)
@@ -135,32 +177,5 @@ public class OxFiler {
             e.printStackTrace();
         }
     }
-
-
-    //    public static String getUUID() {
-//        String serial = null;
-//        String m_szDevIDShort = "35" +
-//                Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
-//                Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +
-//                Build.DISPLAY.length() % 10 + Build.HOST.length() % 10 +
-//                Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10 +
-//                Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10 +
-//                Build.TAGS.length() % 10 + Build.TYPE.length() % 10 +
-//                Build.USER.length() % 10; //13 位
-//        try {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                serial = android.os.Build.getSerial();
-//            } else {
-//                serial = Build.SERIAL;
-//            }
-//            //API>=9 使用serial号
-//            return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-//        } catch (Exception exception) {
-//            //serial需要一个初始化
-//            serial = "serial"; // 随便一个初始化
-//        }
-//        //使用硬件信息拼凑出来的15位号码
-//        return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-//    }
 
 }

@@ -1,2 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.oxframe.storer" />
+    package="cn.oxframe.storer">
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+</manifest>
