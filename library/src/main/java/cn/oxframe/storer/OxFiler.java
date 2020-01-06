@@ -34,12 +34,18 @@ public class OxFiler {
     public static String iCreateFolderPath(String folder) {
         StringBuilder sb = new StringBuilder();
         if (isSDCardAvailable()) {
-            // path：/storage/emulated/0
+            /**
+             * 内部存储 根目录
+             * /storage/emulated/0/%APP_NAME%
+             */
             sb.append(Environment.getExternalStorageDirectory());
             sb.append(File.separator);
             sb.append(APP_NAME);
         } else {
-            // path：/data
+            /**
+             * 内部存储
+             * /storage/emulated/0/Android/data/%package_name%
+             */
             sb.append(Environment.getDataDirectory());
         }
         sb.append(File.separator);
