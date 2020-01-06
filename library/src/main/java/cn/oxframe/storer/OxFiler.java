@@ -14,6 +14,8 @@ import java.io.IOException;
  */
 public class OxFiler {
 
+    public static String APP_NAME = "Sample";
+
     /**
      * SD Card 是否安装 是否可写入数据
      */
@@ -35,7 +37,7 @@ public class OxFiler {
             // path：/storage/emulated/0
             sb.append(Environment.getExternalStorageDirectory());
             sb.append(File.separator);
-            sb.append("Sample");
+            sb.append(APP_NAME);
         } else {
             // path：/data
             sb.append(Environment.getDataDirectory());

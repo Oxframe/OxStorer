@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Map;
 
 import cn.oxframe.storer.OxDevicer;
+import cn.oxframe.storer.OxFiler;
 import cn.oxframe.storer.OxStorer;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, 100);
         }
 
+        OxFiler.APP_NAME = "Test";
         OxStorer.instance(getApplicationContext(), "aaaa");
         initView();
 
@@ -53,11 +55,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
-                if (i == 1) {
-                    OxStorer.put("aaa", "aaaa");
-                    OxStorer.put("bbb", "bbbb");
-                    OxStorer.put("ccc", "cccc");
-                }
+                OxStorer.put("aaa", "aaaa");
+                OxStorer.put("bbb", "bbbb");
+                OxStorer.put("ccc", "cccc");
             }
         });
 
@@ -98,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
-                if (i == 1)
-                    OxStorer.remove("ccc");
+                OxStorer.remove("ccc");
             }
         });
 
@@ -107,8 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int i = checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1, 2);
-                if (i == 1)
-                    OxStorer.clear();
+                OxStorer.clear();
             }
         });
 
