@@ -38,7 +38,10 @@ class StorerFiler {
             field = obj.getClass().getDeclaredField("mPreferencesDir");
             field.setAccessible(true);
             // 创建自定义路径
-            File file = new File(iFilePath(context));
+            File file = iFilesDir(context);
+            if (null == file) {
+                return context.getSharedPreferences(filename, Context.MODE_PRIVATE);
+            }
             // 修改mPreferencesDir变量的值
             Log.i("StorerFiler", file.getAbsolutePath());
             field.set(obj, file);
@@ -49,8 +52,8 @@ class StorerFiler {
         return context.getSharedPreferences(filename, Context.MODE_PRIVATE);
     }
 
-    private static String iFilePath(Context context) {
-        return context.getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+    private static File iFilesDir(Context context) {
+        return context.getApplicationContext().getExternalFilesDir(null);
     }
 
 }

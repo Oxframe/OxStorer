@@ -23,7 +23,7 @@ public class OxDevicer {
      * 生成唯一的设备号
      */
     public static String UUID() {
-        return new UUID(deviceNumber().hashCode(), serialNumber().hashCode()).toString();
+        return new UUID(idevice().hashCode(), iSerial().hashCode()).toString();
     }
 
     /**
@@ -37,37 +37,35 @@ public class OxDevicer {
      * @throws SecurityException
      */
     public static String UUID(Context context, String phone) throws SecurityException {
-        String serialNumber = serialNumber();
+        String mSerial = iSerial();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && !TextUtils.isEmpty(phone)) {
             SubscriptionManager subsManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             if (null != subsManager) {
                 List<SubscriptionInfo> subsList = subsManager.getActiveSubscriptionInfoList();
                 for (SubscriptionInfo subsInfo : subsList) {
                     if (null != subsInfo && !TextUtils.isEmpty(subsInfo.getNumber()) && subsInfo.getNumber().contains(phone)) {
-                        serialNumber = subsInfo.getIccId();
+                        mSerial = subsInfo.getIccId();
                     }
                 }
             }
         }
-        return new UUID(deviceNumber().hashCode(), serialNumber.hashCode()).toString();
+        return new UUID(idevice().hashCode(), mSerial.hashCode()).toString();
     }
 
     /**
      * 序列号
      */
     @SuppressLint("HardwareIds")
-    private static String serialNumber() throws SecurityException {
-        String serial;
+    private static String iSerial() throws SecurityException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // serial = Build.getSerial();
             // The user 10660 does not meet the requirements to access device identifiers.
-            serial = "serial";
+            return "serial";
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            serial = Build.getSerial();
+            return Build.getSerial();
         } else {
-            serial = Build.SERIAL;
+            return Build.SERIAL;
         }
-        return serial;
     }
 
     /**
@@ -75,7 +73,7 @@ public class OxDevicer {
      * 各种硬件信息拼接出来的15位号码
      * 不保证是否重复
      */
-    private static String deviceNumber() {
+    private static String idevice() {
         return "35" +
                 Build.BOARD.length() % 10 +
                 Build.BRAND.length() % 10 +
